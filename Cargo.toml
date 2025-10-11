@@ -1,0 +1,11 @@
+[package]
+name = "game-of-life"
+version = "0.1.0"
+edition = "2021"
+description = "Conway's Game of Life with a minimalist GUI interface"
+
+[dependencies]
+eframe = "0.24"
+egui = "0.24"
+egui_extras = "0.24"
+rand = "0.8"
