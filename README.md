@@ -1,4 +1,4 @@
-# Conway's Game of Life
+# Game of Life on MacOS
 
 A Rust implementation of Conway's Game of Life with a minimalist GUI interface built using eframe/egui. This application allows you to visualize and interact with the classic cellular automaton in real-time.
 
@@ -82,6 +82,8 @@ src/
 ```
 
 ## Performance Notes
+Note: The Metal rendering backend is still under development.
+Depending on grid size, zoom level, and frame synchronization behavior, you may observe increased CPU usage or frame spikes during rendering.
 
 - Grid rendering is optimized to only draw visible cells
 - Simulation runs on a separate timer to maintain consistent speed
