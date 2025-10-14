@@ -101,4 +101,28 @@ impl Grid {
     pub fn cells(&self) -> &Vec<Cell> {
         &self.cells
     }
+
+    pub fn resize(&mut self, new_width: usize, new_height: usize) {
+        if new_width == self.width && new_height == self.height {
+            return; // No change needed
+        }
+
+        let mut new_cells = vec![Cell::Dead; new_width * new_height];
+        
+        // Copy existing cells to the new grid, preserving patterns where possible
+        let copy_width = self.width.min(new_width);
+        let copy_height = self.height.min(new_height);
+        
+        for y in 0..copy_height {
+            for x in 0..copy_width {
+                let old_idx = y * self.width + x;
+                let new_idx = y * new_width + x;
+                new_cells[new_idx] = self.cells[old_idx];
+            }
+        }
+        
+        self.cells = new_cells;
+        self.width = new_width;
+        self.height = new_height;
+    }
 }

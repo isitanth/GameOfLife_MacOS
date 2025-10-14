@@ -7,6 +7,8 @@ pub struct SimulationControls {
     pub generation: u64,     // Current generation number
     pub design_mode: bool,   // Whether we're in design mode or simulation mode
     pub randomness_density: f32, // Density for random generation (0.0 to 1.0)
+    pub grid_width: usize,   // Current grid width
+    pub grid_height: usize,  // Current grid height
 }
 
 impl Default for SimulationControls {
@@ -19,6 +21,8 @@ impl Default for SimulationControls {
             generation: 0,
             design_mode: true,   // Start in design mode
             randomness_density: 0.3, // Default 30% density
+            grid_width: 2000,    // Default grid width
+            grid_height: 1500,   // Default grid height
         }
     }
 }

@@ -65,6 +65,14 @@ impl GameOfLifeApp {
     pub fn new(_cc: &eframe::CreationContext<'_>) -> Self {
         Self::default()
     }
+    
+    fn resize_grid(&mut self, new_width: usize, new_height: usize) {
+        self.grid.resize(new_width, new_height);
+        self.controls.grid_width = new_width;
+        self.controls.grid_height = new_height;
+        // Reset generation counter when resizing
+        self.controls.reset();
+    }
 
     fn draw_grid(&mut self, ui: &mut egui::Ui) {
         let available_size = ui.available_size();
@@ -307,8 +315,61 @@ impl eframe::App for GameOfLifeApp {
             ui.vertical(|ui| {
                 self.draw_controls(ui);
                 ui.separator();
+                self.draw_grid_controls(ui);
+                ui.separator();
                 self.draw_grid(ui);
             });
+        });
+    }
+}
+
+impl GameOfLifeApp {
+    fn draw_grid_controls(&mut self, ui: &mut egui::Ui) {
+        ui.horizontal(|ui| {
+            ui.label("Grid Size:");
+            
+            // Width control
+            ui.label("W:");
+            let mut temp_width = self.controls.grid_width as f32;
+            if ui.add(egui::Slider::new(&mut temp_width, 50.0..=3000.0)
+                .logarithmic(true)
+                .custom_formatter(|n, _| format!("{:.0}", n)))
+                .changed() {
+                let new_width = temp_width as usize;
+                if new_width != self.controls.grid_width {
+                    self.resize_grid(new_width, self.controls.grid_height);
+                }
+            }
+            
+            // Height control
+            ui.label("H:");
+            let mut temp_height = self.controls.grid_height as f32;
+            if ui.add(egui::Slider::new(&mut temp_height, 50.0..=2500.0)
+                .logarithmic(true)
+                .custom_formatter(|n, _| format!("{:.0}", n)))
+                .changed() {
+                let new_height = temp_height as usize;
+                if new_height != self.controls.grid_height {
+                    self.resize_grid(self.controls.grid_width, new_height);
+                }
+            }
+            
+            ui.separator();
+            
+            // Preset buttons
+            ui.label("Presets:");
+            if ui.button("Small\n(200×150)").clicked() {
+                self.resize_grid(200, 150);
+            }
+            if ui.button("Medium\n(500×400)").clicked() {
+                self.resize_grid(500, 400);
+            }
+            if ui.button("Large\n(1000×800)").clicked() {
+                self.resize_grid(1000, 800);
+            }
+            if ui.button("Huge\n(2000×1500)").clicked() {
+                self.resize_grid(2000, 1500);
+            }
         });
     }
 }
