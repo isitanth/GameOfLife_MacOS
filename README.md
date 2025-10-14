@@ -29,13 +29,13 @@ A Rust implementation of Conway's Game of Life with a minimalist GUI interface b
 - **Clear**: Clear all cells
 - **Random**: Generate random pattern (30% density)
 
-## Building and Running
+## Building and running
 
 ### Prerequisites
 - Rust (latest stable version recommended)
 - Cargo (comes with Rust)
 
-### Build and Run
+### Build and run
 ```bash
 # Clone or navigate to the project directory
 cd ~/projects/GoL
@@ -56,7 +56,7 @@ cargo run --release
 - `egui_extras`: Additional egui utilities
 - `rand`: Random number generation for grid initialization
 
-## Game Rules
+## Game rules
 
 Conway's Game of Life follows these simple rules:
 
@@ -65,7 +65,7 @@ Conway's Game of Life follows these simple rules:
 3. **Overpopulation**: Any live cell with more than 3 live neighbors dies  
 4. **Reproduction**: Any dead cell with exactly 3 live neighbors becomes alive
 
-## Project Structure
+## Project structure
 
 ```
 src/
@@ -81,7 +81,7 @@ src/
     └── controls.rs     # Simulation control state
 ```
 
-## Performance Notes
+## Performance notes
 Note: The Metal rendering backend is still under development.
 Depending on grid size, zoom level, and frame synchronization behavior, you may observe increased CPU usage or frame spikes during rendering.
 
