@@ -3,14 +3,14 @@ use rand::Rng;
 
 #[derive(Debug, Clone)]
 pub struct Grid {
-    cells: Vec<Vec<Cell>>,
+    cells: Vec<Cell>,  // Flat array for better cache locality
     width: usize,
     height: usize,
 }
 
 impl Grid {
     pub fn new(width: usize, height: usize) -> Self {
-        let cells = vec![vec![Cell::default(); width]; height];
+        let cells = vec![Cell::default(); width * height];
         Self {
             cells,
             width,
@@ -18,14 +18,11 @@ impl Grid {
         }
     }
 
+    #[allow(dead_code)]
     pub fn new_random(width: usize, height: usize, density: f64) -> Self {
         let mut rng = rand::thread_rng();
-        let cells = (0..height)
-            .map(|_| {
-                (0..width)
-                    .map(|_| Cell::from(rng.gen::<f64>() < density))
-                    .collect()
-            })
+        let cells = (0..width * height)
+            .map(|_| Cell::from(rng.gen::<f64>() < density))
             .collect();
         
         Self {
@@ -45,7 +42,7 @@ impl Grid {
 
     pub fn get_cell(&self, x: usize, y: usize) -> Cell {
         if x < self.width && y < self.height {
-            self.cells[y][x]
+            self.cells[y * self.width + x]
         } else {
             Cell::Dead
         }
@@ -53,13 +50,13 @@ impl Grid {
 
     pub fn set_cell(&mut self, x: usize, y: usize, cell: Cell) {
         if x < self.width && y < self.height {
-            self.cells[y][x] = cell;
+            self.cells[y * self.width + x] = cell;
         }
     }
 
     pub fn toggle_cell(&mut self, x: usize, y: usize) {
         if x < self.width && y < self.height {
-            self.cells[y][x].toggle();
+            self.cells[y * self.width + x].toggle();
         }
     }
 
@@ -76,7 +73,8 @@ impl Grid {
                 let ny = y as i32 + dy;
                 
                 if nx >= 0 && ny >= 0 && nx < self.width as i32 && ny < self.height as i32 {
-                    if self.cells[ny as usize][nx as usize].is_alive() {
+                    let idx = (ny as usize) * self.width + (nx as usize);
+                    if self.cells[idx].is_alive() {
                         count += 1;
                     }
                 }
@@ -87,23 +85,20 @@ impl Grid {
     }
 
     pub fn clear(&mut self) {
-        for row in &mut self.cells {
-            for cell in row {
-                *cell = Cell::Dead;
-            }
+        for cell in &mut self.cells {
+            *cell = Cell::Dead;
         }
     }
 
     pub fn randomize(&mut self, density: f64) {
         let mut rng = rand::thread_rng();
-        for row in &mut self.cells {
-            for cell in row {
-                *cell = Cell::from(rng.gen::<f64>() < density);
-            }
+        for cell in &mut self.cells {
+            *cell = Cell::from(rng.gen::<f64>() < density);
         }
     }
 
-    pub fn cells(&self) -> &Vec<Vec<Cell>> {
+    #[allow(dead_code)]
+    pub fn cells(&self) -> &Vec<Cell> {
         &self.cells
     }
 }

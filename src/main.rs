@@ -9,18 +9,25 @@ fn main() -> Result<(), eframe::Error> {
         viewport: egui::ViewportBuilder::default()
             .with_inner_size([1200.0, 800.0])
             .with_min_inner_size([800.0, 600.0])
-            .with_title("Conway's Game of Life"),
+            .with_title("Game of Life"),
+        renderer: eframe::Renderer::Wgpu,
+        wgpu_options: eframe::egui_wgpu::WgpuConfiguration {
+            // Enable high-performance mode for Apple Silicon
+            present_mode: eframe::wgpu::PresentMode::Fifo, // VSync for smooth rendering
+            desired_maximum_frame_latency: Some(2), // Low latency for responsiveness
+            ..Default::default()
+        },
         ..Default::default()
     };
     
     eframe::run_native(
-        "Conway's Game of Life",
+        "Game of Life",
         options,
         Box::new(|cc| {
             // This gives us image support:
             egui_extras::install_image_loaders(&cc.egui_ctx);
             
-            Box::new(GameOfLifeApp::new(cc))
+            Ok(Box::new(GameOfLifeApp::new(cc)))
         }),
     )
 }

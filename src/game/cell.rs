@@ -9,6 +9,7 @@ impl Cell {
         matches!(self, Cell::Alive)
     }
 
+    #[allow(dead_code)]
     pub fn is_dead(&self) -> bool {
         matches!(self, Cell::Dead)
     }

@@ -5,6 +5,8 @@ pub struct SimulationControls {
     pub zoom: f32,           // Zoom level for the grid
     pub cell_size: f32,      // Size of each cell in pixels
     pub generation: u64,     // Current generation number
+    pub design_mode: bool,   // Whether we're in design mode or simulation mode
+    pub randomness_density: f32, // Density for random generation (0.0 to 1.0)
 }
 
 impl Default for SimulationControls {
@@ -13,8 +15,10 @@ impl Default for SimulationControls {
             is_playing: false,
             speed: 5.0,          // 5 generations per second
             zoom: 1.0,
-            cell_size: 10.0,     // 10 pixels per cell
+            cell_size: 2.0,      // 2 pixels per cell for large grids
             generation: 0,
+            design_mode: true,   // Start in design mode
+            randomness_density: 0.3, // Default 30% density
         }
     }
 }
@@ -59,5 +63,24 @@ impl SimulationControls {
 
     pub fn next_generation(&mut self) {
         self.generation += 1;
+    }
+
+    pub fn toggle_design_mode(&mut self) {
+        self.design_mode = !self.design_mode;
+        if self.design_mode {
+            // When entering design mode, pause the simulation
+            self.is_playing = false;
+        }
+    }
+
+    #[allow(dead_code)]
+    pub fn enter_simulation_mode(&mut self) {
+        self.design_mode = false;
+    }
+
+    #[allow(dead_code)]
+    pub fn enter_design_mode(&mut self) {
+        self.design_mode = true;
+        self.is_playing = false;
     }
 }
