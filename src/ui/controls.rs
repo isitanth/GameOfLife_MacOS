@@ -16,8 +16,8 @@ impl Default for SimulationControls {
         Self {
             is_playing: false,
             speed: 5.0,          // 5 generations per second
-            zoom: 1.0,
-            cell_size: 2.0,      // 2 pixels per cell for large grids
+            zoom: 3.0,           // Start zoomed in for better visibility
+            cell_size: 3.0,      // 3 pixels per cell for better visibility
             generation: 0,
             design_mode: true,   // Start in design mode
             randomness_density: 0.3, // Default 30% density

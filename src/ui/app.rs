@@ -268,6 +268,11 @@ impl GameOfLifeApp {
             if ui.button("Random").clicked() {
                 self.grid.randomize(self.controls.randomness_density as f64);
                 self.controls.reset();
+                // Center the viewport and ensure reasonable zoom to see the randomized cells
+                self.grid_offset = Vec2::ZERO;
+                if self.controls.zoom < 2.0 {
+                    self.controls.zoom = 2.0; // Ensure at least 2x zoom for visibility
+                }
             }
 
             ui.separator();
