@@ -1,6 +1,6 @@
 # Game of Life on MacOS
 
-A Rust implementation of Conway's Game of Life with a minimalist GUI interface built using eframe/egui. This application allows you to visualize and interact with the classic cellular automaton in real-time.
+A Rust implementation of Conway's Game of Life with a minimalist GUI interface built using eframe/egui. This application allows you to visualize and interact with the classic cellular automaton in real-time. Using Metal, a low-level, low-overhead hardware-accelerated 3D graphic and compute shader API created by Apple. In result this is allowing to run the project from a laptop while processing 3M cells in real time.
 
 ## Features
 
