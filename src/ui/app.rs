@@ -286,6 +286,28 @@ impl GameOfLifeApp {
             
             ui.separator();
             ui.label(format!("Grid: {}×{}", self.grid.width(), self.grid.height()));
+            
+            // GPU acceleration status
+            #[cfg(target_os = "macos")]
+            {
+                #[cfg(metal_available)]
+                {
+                    if self.grid.has_gpu_acceleration() {
+                        ui.label("🚀 Metal GPU Accelerated");
+                    } else {
+                        ui.label("🐌 CPU Only");
+                    }
+                }
+                #[cfg(not(metal_available))]
+                {
+                    ui.label("🐌 CPU Only (Metal N/A)");
+                }
+            }
+            #[cfg(not(target_os = "macos"))]
+            {
+                ui.label("🐌 CPU Only (Metal N/A)");
+            }
+            
             ui.label(format!("FPS: {:.1}", self.frame_history.fps()));
         });
     }

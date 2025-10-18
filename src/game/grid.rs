@@ -1,11 +1,17 @@
 use super::Cell;
 use rand::Rng;
+#[cfg(all(target_os = "macos", metal_available))]
+use crate::metal::MetalRenderer;
+#[cfg(all(target_os = "macos", metal_available))]
+use std::sync::Mutex;
 
 #[derive(Debug, Clone)]
 pub struct Grid {
     cells: Vec<Cell>,  // Flat array for better cache locality
     width: usize,
     height: usize,
+    #[cfg(all(target_os = "macos", metal_available))]
+    metal_renderer: Option<std::sync::Arc<Mutex<MetalRenderer>>>,
 }
 
 impl Grid {
@@ -15,6 +21,22 @@ impl Grid {
             cells,
             width,
             height,
+            #[cfg(all(target_os = "macos", metal_available))]
+            metal_renderer: Self::try_create_metal_renderer(),
+        }
+    }
+    
+    #[cfg(all(target_os = "macos", metal_available))]
+    fn try_create_metal_renderer() -> Option<std::sync::Arc<Mutex<MetalRenderer>>> {
+        match MetalRenderer::new() {
+            Ok(renderer) => {
+                println!("Metal GPU acceleration enabled");
+                Some(std::sync::Arc::new(Mutex::new(renderer)))
+            }
+            Err(e) => {
+                println!("Metal GPU acceleration failed: {}", e);
+                None
+            }
         }
     }
 
@@ -29,6 +51,8 @@ impl Grid {
             cells,
             width,
             height,
+            #[cfg(all(target_os = "macos", metal_available))]
+            metal_renderer: Self::try_create_metal_renderer(),
         }
     }
 
@@ -124,5 +148,60 @@ impl Grid {
         self.cells = new_cells;
         self.width = new_width;
         self.height = new_height;
+        
+        // Keep the existing Metal renderer reference when resizing
+        // No need to recreate it
+    }
+    
+    /// Evolve using Metal GPU acceleration if available, fallback to CPU
+    #[cfg(all(target_os = "macos", metal_available))]
+    pub fn evolve_gpu(&self) -> Option<Grid> {
+        if let Some(ref renderer_arc) = self.metal_renderer {
+            if let Ok(mut renderer) = renderer_arc.lock() {
+                // Convert Cell enum to u8 for GPU
+                let grid_data: Vec<u8> = self.cells.iter()
+                    .map(|cell| if cell.is_alive() { 1u8 } else { 0u8 })
+                    .collect();
+                
+                match renderer.evolve_grid(&grid_data, self.width, self.height) {
+                    Ok(result_data) => {
+                        // Convert u8 back to Cell enum
+                        let new_cells: Vec<Cell> = result_data.iter()
+                            .map(|&val| if val == 1 { Cell::Alive } else { Cell::Dead })
+                            .collect();
+                        
+                        let mut new_grid = Grid {
+                            cells: new_cells,
+                            width: self.width,
+                            height: self.height,
+                            metal_renderer: self.metal_renderer.clone(),
+                        };
+                        
+                        return Some(new_grid);
+                    }
+                    Err(e) => {
+                        eprintln!("GPU evolution failed: {}", e);
+                    }
+                }
+            }
+        }
+        None
+    }
+    
+    /// Check if Metal GPU acceleration is available
+    #[cfg(all(target_os = "macos", metal_available))]
+    pub fn has_gpu_acceleration(&self) -> bool {
+        self.metal_renderer.is_some()
+    }
+    
+    /// Get GPU device information
+    #[cfg(all(target_os = "macos", metal_available))]
+    pub fn gpu_info(&self) -> Option<String> {
+        if let Some(ref renderer_arc) = self.metal_renderer {
+            if let Ok(renderer) = renderer_arc.lock() {
+                return Some(renderer.device_info());
+            }
+        }
+        None
     }
 }

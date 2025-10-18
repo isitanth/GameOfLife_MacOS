@@ -10,3 +10,16 @@ egui = "0.32"
 egui_extras = "0.32"
 rand = "0.8"
 wgpu = { version = "25", features = ["metal"] }
+
+# Metal GPU compute dependencies (optional)
+objc2 = { version = "0.5", optional = true }
+objc2-metal = { version = "0.2", optional = true }
+objc2-foundation = { version = "0.2", optional = true }
+block2 = { version = "0.5", optional = true }
+bytemuck = { version = "1.0", features = ["derive"], optional = true }
+anyhow = { version = "1.0", optional = true }
+thiserror = { version = "1.0", optional = true }
+
+[features]
+default = ["metal"]
+metal = ["objc2", "objc2-metal", "objc2-foundation", "block2", "bytemuck", "anyhow", "thiserror"]

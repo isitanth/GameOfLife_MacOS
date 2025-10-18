@@ -1,10 +1,37 @@
 mod game;
 mod ui;
+#[cfg(all(target_os = "macos", metal_available))]
+mod metal;
 
 use eframe::egui;
 use ui::GameOfLifeApp;
+use game::GameBenchmark;
 
 fn main() -> Result<(), eframe::Error> {
+    let args: Vec<String> = std::env::args().collect();
+    
+    // Check for benchmark mode
+    if args.len() > 1 && args[1] == "benchmark" {
+        println!("🚀 Game of Life - Metal GPU Acceleration Benchmark");
+        println!("================================================\n");
+        
+        // Run scaling benchmark
+        GameBenchmark::scaling_benchmark();
+        
+        // Run specific size benchmark if provided
+        if args.len() >= 5 {
+            if let (Ok(width), Ok(height), Ok(generations)) = (
+                args[2].parse::<usize>(),
+                args[3].parse::<usize>(),
+                args[4].parse::<u32>()
+            ) {
+                println!("\n🎯 Custom Benchmark:");
+                GameBenchmark::benchmark_evolution(width, height, generations, 0.3);
+            }
+        }
+        
+        return Ok(());
+    }
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
             .with_inner_size([1200.0, 800.0])
