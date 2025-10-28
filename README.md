@@ -1,27 +1,27 @@
-# Game of Life on MacOS
+# Game of life on MacOS
 
 A Rust implementation of Conway's Game of Life with a minimalist GUI interface built using eframe/egui. This application allows you to visualize and interact with the classic cellular automaton in real-time. Using Metal, a low-level, low-overhead hardware-accelerated 3D graphic and compute shader API created by Apple. In result this is allowing to run the project from a laptop while processing 3M cells in real time.
 
 ## Features
 
-- **Interactive Grid**: Click to toggle cells when the simulation is paused
-- **Real-time Simulation**: Watch the Game of Life evolve with customizable speed
-- **Zoom & Pan**: Navigate through the grid with mouse wheel zoom and click-and-drag panning
-- **Speed Control**: Adjust simulation speed from 0.1 to 100 generations per second
-- **Step-by-step Mode**: Manual stepping through generations when paused
-- **Random Generation**: Generate random initial patterns
-- **Clear Grid**: Reset the grid to an empty state
-- **Generation Counter**: Track the current generation number
+- **Interactive grid**: Click to toggle cells when the simulation is paused
+- **Real-time simulation**: Watch the Game of Life evolve with customizable speed
+- **Zoom & pan**: Navigate through the grid with mouse wheel zoom and click-and-drag panning
+- **Speed control**: Adjust simulation speed from 0.1 to 100 generations per second
+- **Step-by-step mode**: Manual stepping through generations when paused
+- **Random generation**: Generate random initial patterns
+- **Clear grid**: Reset the grid to an empty state
+- **Generation counter**: Track the current generation number
 
 ## Controls
 
 ### Mouse
-- **Left Click**: Toggle cell state (when paused)
+- **Left click**: Toggle cell state (when paused)
 - **Drag**: Pan the view around the grid
-- **Scroll Wheel**: Zoom in/out
+- **Scroll wheel**: Zoom in/out
 
 ### Buttons
-- **Play/Pause**: Start or stop the simulation
+- **Play/pause**: Start or stop the simulation
 - **Step**: Advance one generation (when paused)
 - **Speed −/+**: Decrease/increase simulation speed
 - **Zoom −/+**: Zoom out/in
@@ -34,8 +34,8 @@ A Rust implementation of Conway's Game of Life with a minimalist GUI interface b
 ### Prerequisites
 - Rust (latest stable version recommended)
 - Cargo (comes with Rust)
-- **macOS 11.0+** with Apple Silicon (M1/M2) for GPU acceleration
-- **Xcode Command Line Tools** for Metal shader compilation (`xcode-select --install`)
+- **MacOS 11.0+** with Apple Silicon (M1/M2) for GPU acceleration
+- **Xcode command line tools** for Metal shader compilation (`xcode-select --install`)
 
 ### Build and run
 ```bash
@@ -91,33 +91,33 @@ src/
 
 ## Performance notes
 
-### Metal GPU Acceleration 🚀
+### Metal GPU acceleration
 
 This implementation includes **Metal GPU compute acceleration** for Apple Silicon (M1/M2) Macs:
 
-- **Automatic GPU Detection**: Detects Metal support and falls back to CPU if unavailable
-- **Optimized Compute Shaders**: Two shader variants (basic and shared memory) tuned for M1 Pro
-- **Unified Memory Usage**: Leverages Apple Silicon's unified memory architecture
-- **Buffer Pool**: Efficient Metal buffer reuse to minimize allocation overhead
-- **8×8 Threadgroups**: Optimized for M1 Pro's 16-core GPU tile architecture
+- **Automatic GPU detection**: Detects Metal support and falls back to CPU if unavailable
+- **Optimized compute shaders**: Two shader variants (basic and shared memory) tuned for M1 Pro
+- **Unified memory usage**: Leverages Apple Silicon's unified memory architecture
+- **Buffer pool**: Efficient Metal buffer reuse to minimize allocation overhead
+- **8×8 threadgroups**: Optimized for M1 Pro's 16-core GPU tile architecture
 
-### CPU Performance (M1 Pro)
-- **135M+ cells/sec** on large grids (1000×1000)
-- **Viewport Culling**: Only renders visible cells for smooth 60fps
-- **Flat Array Storage**: Cache-friendly memory layout
-- **Batch Rendering**: Minimizes GPU draw calls
+### CPU performance (m1 pro)
+- **135m+ cells/sec** on large grids (1000×1000)
+- **Viewport culling**: Only renders visible cells for smooth 60fps
+- **Flat array storage**: Cache-friendly memory layout
+- **Batch rendering**: Minimizes GPU draw calls
 
 ## License
 
 This project is open source. Feel free to use, modify, and distribute.
 
-## Technical Implementation
+## Technical implementation
 
-### Metal GPU Compute Pipeline
-- **Direct Metal API**: Uses `objc2-metal` for direct Metal API access (no wgpu wrapper)
-- **Compute Shaders**: Written in Metal Shading Language (.metal files)
-- **Build-time Compilation**: Shaders compiled to .metallib during `cargo build`
-- **Conditional Compilation**: GPU features only enabled when Metal toolchain is available
+### Metal GPU compute pipeline
+- **Direct metal API**: Uses `objc2-metal` for direct Metal API access (no wgpu wrapper)
+- **Compute shaders**: Written in Metal Shading Language (.metal files)
+- **Build-time compilation**: Shaders compiled to .metallib during `cargo build`
+- **Conditional compilation**: GPU features only enabled when Metal toolchain is available
 
 ### Architecture
 ```
@@ -144,3 +144,4 @@ Contributions are welcome! Some ideas for improvements:
 - Statistics tracking
 - Multi-GPU support
 - Vulkan compute backend for non-Apple platforms
+
